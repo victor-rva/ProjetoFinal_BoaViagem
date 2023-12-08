@@ -38,18 +38,72 @@ categoria_id INT,
 data_inicio DATE,
 data_retorno DATE,
 validade DATE,
-FOREIGN KEY(categoria_id) REFERENCES categorias(id)
+FOREIGN KEY(categoria_id) REFERENCES categorias(id),
+disponivel BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE pedidos_pacotes(
 pedido_id INT NOT NULL ,
-produto_id INT NOT NULL ,
+pacote_id INT NOT NULL ,
 preco DOUBLE,
 quantidade DOUBLE,
-PRIMARY KEY (pedido_id, produto_id),
+PRIMARY KEY (pedido_id, pacote_id),
 foreign key(pedido_id) references pedidos (id),
-foreign key(produto_id) references pacotes (id)
+foreign key(pacote_id) references pacotes (id)
 );
 
 -- Fazer trigger para decrementar a quantidade do pacote quando uma viagem for escolhida
+DELIMITER //
+
+CREATE TRIGGER decrementar_quantidade
+AFTER INSERT ON pedidos_pacotes
+FOR EACH ROW
+BEGIN
+    DECLARE pacote_quantidade_atual DOUBLE;
+    
+    -- Obter a quantidade atual do pacote
+    SELECT quantidade INTO pacote_quantidade_atual
+    FROM pacotes
+    WHERE id = NEW.pacote_id;
+    
+    -- Verificar se a quantidade é maior que zero antes de decrementar
+    IF pacote_quantidade_atual > 0 THEN
+        -- Decrementar a quantidade do pacote
+        UPDATE pacotes
+        SET quantidade = pacote_quantidade_atual - NEW.quantidade
+        WHERE id = NEW.pacote_id;
+    END IF;
+END;
+
+//
+
+DELIMITER ;
+
+
 -- Fazer trigger para quando tiver um update em pedidos_pacotes para a quantidade do pacote ser atualizada conforme a diferença (somar a quantidade de pacotes mais a diferença entre o OLD e NEW do pedidos_pacotes)
+DELIMITER //
+
+CREATE TRIGGER atualizar_quantidade
+AFTER UPDATE ON pedidos_pacotes
+FOR EACH ROW
+BEGIN
+    DECLARE pacote_quantidade_atual DOUBLE;
+    DECLARE diferenca_quantidade DOUBLE;
+    
+    -- Obter a quantidade atual do pacote
+    SELECT quantidade INTO pacote_quantidade_atual
+    FROM pacotes
+    WHERE id = NEW.pacote_id;
+    
+    -- Calcular a diferença na quantidade
+    SET diferenca_quantidade = NEW.quantidade - OLD.quantidade;
+    
+    -- Atualizar a quantidade do pacote
+    UPDATE pacotes
+    SET quantidade = pacote_quantidade_atual + diferenca_quantidade
+    WHERE id = NEW.pacote_id;
+END;
+
+//
+
+DELIMITER ;
