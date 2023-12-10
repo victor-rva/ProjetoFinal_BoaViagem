@@ -4,17 +4,6 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const MySQLStore = require('express-mysql-session')(session);
-const mysql = require('mysql');
-
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'site_viagem'
-});
 
 app.set('view engine', 'ejs');
 
@@ -32,7 +21,7 @@ app.get('/', function(req, res){
   res.render('pages/success', {user: userProfile});
 });
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 app.listen(port , () => console.log('App listening on port ' + port));
 
 
@@ -61,12 +50,12 @@ passport.deserializeUser(function(obj, cb) {
 /*  Google AUTH  */
  
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const GOOGLE_CLIENT_ID = '346637207694-8980ehioe0uhhujvgpgl4kuimgarlus6.apps.googleusercontent.com';
-const GOOGLE_CLIENT_SECRET = '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';
+const GOOGLE_CLIENT_ID = '11670325587-4rtvaepe69jo2piq53e4jsc8o7okgjak.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:4000/auth/google/callback"
+    callbackURL: "http://localhost:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
       userProfile=profile;
@@ -82,4 +71,4 @@ app.get('/auth/google/callback',
   function(req, res) {
     // Successful authentication, redirect success.
     res.redirect('/success');
-  });   
+  });

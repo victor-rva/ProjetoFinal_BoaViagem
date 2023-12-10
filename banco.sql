@@ -52,6 +52,15 @@ foreign key(pedido_id) references pedidos (id),
 foreign key(pacote_id) references pacotes (id)
 );
 
+CREATE TABLE sessions (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(255) NOT NULL,
+    dados TEXT NOT NULL,
+    expires DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Fazer trigger para decrementar a quantidade do pacote quando uma viagem for escolhida
 DELIMITER //
 

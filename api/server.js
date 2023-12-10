@@ -2,7 +2,7 @@ const restify = require('restify');
 const errors = require('restify-errors');
 const restifyPlugins = require('restify-plugins');
 
-//Rotas
+//Routes
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const cidadeRoutes = require('./routes/cidadeRoutes');
 const clienteRoutes = require('./routes/clienteRoutes');
@@ -29,3 +29,4 @@ clienteRoutes(servidor);
 produtoRoutes(servidor);
 pedidoRoutes(servidor);
 ped_pacRoutes(servidor)
+
