@@ -1,64 +1,76 @@
+const express = require('express');
+const router = express.Router();
 const knex = require('../knex');
-const errors = require('restify-errors');
+const { BadRequestError } = require('restify-errors');
 
 // Aqui você pode definir todas as operações relacionadas à categoria
 
-const getCategorias = (req, res, next) => {
-  knex('categorias').then((dados) => {
+const getCategorias = async (req, res, next) => {
+  try {
+    const dados = await knex('categorias');
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getCategoriaPorId = (req, res, next) => {
+const getCategoriaPorId = async (req, res, next) => {
   const idCategoria = req.params.idCat;
-  knex('categorias')
-    .where('id', idCategoria)
-    .first()
-    .then((dados) => {
-      if (!dados || dados == '') {
-        return res.send(new errors.BadRequestError('Categoria não encontrado'));
-      } else {
-        res.send(dados);
-      }
-    });
-};
+  try {
+    const dados = await knex('categorias')
+      .where('id', idCategoria)
+      .first();
 
-const adicionarCategoria = (req, res, next) => {
-  knex('categorias')
-    .insert(req.body)
-    .then((dados) => {
+    if (!dados || dados == '') {
+      return res.status(400).send(new BadRequestError('Categoria não encontrada'));
+    } else {
       res.send(dados);
-    }, next);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const atualizarCategoria = (req, res, next) => {
-    const id = req.params.id;
-    knex('categorias')
+const adicionarCategoria = async (req, res, next) => {
+  try {
+    const dados = await knex('categorias').insert(req.body);
+    res.send(dados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const atualizarCategoria = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('categorias')
       .where('id', id)
-      .update(req.body)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Essa categoria não foi encontrada'));
-        }
-        res.send("Categoria de id "+id+" atualizado");
-      })
-      .catch(next);
-  };
-  
-  const deletarCategoria = (req, res, next) => {
-    const id = req.params.id;
-    knex('categorias')
+      .update(req.body);
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Essa categoria não foi encontrada'));
+    }
+    res.send(`Categoria de id ${id} atualizada`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deletarCategoria = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('categorias')
       .where('id', id)
-      .delete()
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Esta categoria não foi encontrada'));
-        }
-        res.send("Categoria de id "+id+" deletada");
-      })
-      .catch(next);
-  };
-  
+      .delete();
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Esta categoria não foi encontrada'));
+    }
+    res.send(`Categoria de id ${id} deletada`);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getCategorias,

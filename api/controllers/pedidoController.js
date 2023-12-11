@@ -1,83 +1,97 @@
-// categoriaController.js
-const knex = require('../knex'); // Importe o arquivo knexfile.js que acabamos de criar
-const errors = require('restify-errors');
+const express = require('express');
+const router = express.Router();
+const knex = require('../knex');
+const { BadRequestError } = require('restify-errors');
 
 // Aqui você pode definir todas as operações relacionadas à categoria
 
-const getPedidos = (req, res, next) => {
-  knex('pedidos').then((dados) => {
+const getPedidos = async (req, res, next) => {
+  try {
+    const dados = await knex('pedidos');
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-
-const getPedidoPorId = (req, res, next) => {
+const getPedidoPorId = async (req, res, next) => {
   const idPedido = req.params.id;
-  knex('pedidos')
-    .where('id', idPedido)
-    .first()
-    .then((dados) => {
-      if (!dados || dados == '') {
-        return res.send(new errors.BadRequestError('Pedido não encontrado'));
-      } else {
-        res.send(dados);
-      }
-    });
+  try {
+    const dados = await knex('pedidos')
+      .where('id', idPedido)
+      .first();
+
+    if (!dados || dados == '') {
+      return res.status(400).send(new BadRequestError('Pedido não encontrado'));
+    } else {
+      res.send(dados);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getPorCliente = (req, res, next) => {
-  //retorna todos os pedidos desse cliente
+const getPedidosPorCliente = async (req, res, next) => {
+  // Retorna todos os pedidos desse cliente
   const idCliente = req.params.id;
-  knex('pedidos')
-    .where('id_cliente', idCliente)
-    .first()
-    .then((dados) => {
-      if (!dados || dados == '') {
-        return res.send(new errors.BadRequestError('Pedido não encontrado'));
-      } else {
-        res.send(dados);
-      }
-    });
+  try {
+    const dados = await knex('pedidos')
+      .where('id_cliente', idCliente)
+      .first();
+
+    if (!dados || dados == '') {
+      return res.status(400).send(new BadRequestError('Pedido não encontrado'));
+    } else {
+      res.send(dados);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const adicionarPedido = (req, res, next) => {
-    knex('pedidos')
+const adicionarPedido = async (req, res, next) => {
+  try {
+    const dados = await knex('pedidos')
       .insert(req.body)
-      .returning('*')
-      .then((dados) => {
-        res.send(dados[0]);
-      })
-      .catch(next);
-  };
+      .returning('*');
+    res.send(dados[0]);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const atualizarPedido = (req, res, next) => {
-    const id = req.params.id;
-    knex('pedidos')
+const atualizarPedido = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('pedidos')
       .where('id', id)
-      .update(req.body)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Esse pedido não foi encontrado'));
-        }
-        res.send("Pedido de id "+id+" atualizado");
-      })
-      .catch(next);
-  };
-  
-  const deletarPedido = (req, res, next) => {
-    //Não deleta o pedido, só o torna "inativo"
-    const id = req.params.id;
-    knex('pedidos')
+      .update(req.body);
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Esse pedido não foi encontrado'));
+    }
+    res.send(`Pedido de id ${id} atualizado`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deletarPedido = async (req, res, next) => {
+  // Não deleta o pedido, só o torna "inativo"
+  const id = req.params.id;
+  try {
+    const dados = await knex('pedidos')
       .where('id', id)
-      .update("ativo",false)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Este pedido não foi encontrado'));
-        }
-        res.send("Pedido de id "+id+" deletado");
-      })
-      .catch(next);
-  };
+      .update("ativo", false);
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Este pedido não foi encontrado'));
+    }
+    res.send(`Pedido de id ${id} deletado`);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getPedidos,
@@ -85,5 +99,5 @@ module.exports = {
   atualizarPedido,
   deletarPedido,
   getPedidoPorId,
-  getPorCliente
+  getPedidosPorCliente
 };

@@ -1,67 +1,78 @@
-// categoriaController.js
+const express = require('express');
+const router = express.Router();
 const knex = require('../knex'); // Importe o arquivo knexfile.js que acabamos de criar
-const errors = require('restify-errors');
+const { BadRequestError } = require('restify-errors');
 
 // Aqui você pode definir todas as operações relacionadas à categoria
 
-const getCidades = (req, res, next) => {
-  knex('cidades').then((dados) => {
+const getCidades = async (req, res, next) => {
+  try {
+    const dados = await knex('cidades');
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getCidadePorId = (req, res, next) => {
+const getCidadePorId = async (req, res, next) => {
   const idCategoria = req.params.idCat;
-  knex('cidades')
-    .where('id', idCategoria)
-    .first()
-    .then((dados) => {
-      if (!dados || dados == '') {
-        return res.send(new errors.BadRequestError('Produto não encontrado'));
-      } else {
-        res.send(dados);
-      }
-    });
+  try {
+    const dados = await knex('cidades')
+      .where('id', idCategoria)
+      .first();
+
+    if (!dados || dados == '') {
+      return res.status(400).send(new BadRequestError('Produto não encontrado'));
+    } else {
+      res.send(dados);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const adicionarCidade = (req, res, next) => {
-    knex('cidades')
+const adicionarCidade = async (req, res, next) => {
+  try {
+    const dados = await knex('cidades')
       .insert(req.body)
-      .returning('*')
-      .then((dados) => {
-        res.send(dados[0]);
-      })
-      .catch(next);
-  };
+      .returning('*');
+    res.send(dados[0]);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const atualizarCidade = (req, res, next) => {
-    const id = req.params.id;
-    knex('cidades')
+const atualizarCidade = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('cidades')
       .where('id', id)
-      .update(req.body)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Essa categoria não foi encontrada'));
-        }
-        res.send("Categoria de id "+id+" atualizado");
-      })
-      .catch(next);
-  };
-  
-  const deletarCidade = (req, res, next) => {
-    const id = req.params.id;
-    knex('cidades')
+      .update(req.body);
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Essa categoria não foi encontrada'));
+    }
+    res.send(`Cidade de id ${id} atualizada`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deletarCidade = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('cidades')
       .where('id', id)
-      .delete()
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Esta categoria não foi encontrada'));
-        }
-        res.send("Categoria de id "+id+" deletada");
-      })
-      .catch(next);
-  };
-  
+      .delete();
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Esta categoria não foi encontrada'));
+    }
+    res.send(`Cidade de id ${id} deletada`);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getCidades,

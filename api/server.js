@@ -1,32 +1,37 @@
-const restify = require('restify');
-const errors = require('restify-errors');
-const restifyPlugins = require('restify-plugins');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-//Routes
+// Routes
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const cidadeRoutes = require('./routes/cidadeRoutes');
 const clienteRoutes = require('./routes/clienteRoutes');
 const pedidoRoutes = require('./routes/pedidoRoutes');
-const produtoRoutes = require('./routes/pacoteRoutes');
+const pacoteRoutes = require('./routes/pacoteRoutes');
 const ped_pacRoutes = require('./routes/ped_pacRoutes');
 
-const servidor = restify.createServer({
-  name: 'SiteDeViagem',
-  version: '1.0.0',
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+// Add your routes
+app.get('/', (req, res) => {
+  res.status(200).send("Seja bem-vindo ao API BoaViagem");
 });
+app.use('/categoria', categoriaRoutes);
+app.use('/categoria', cidadeRoutes);
+app.use('/categoria', clienteRoutes);
+app.use('/categoria', pacoteRoutes);
+app.use('/categoria', pedidoRoutes);
+app.use('/categoria', ped_pacRoutes);
+//categoriaRoutes(app);
+// cidadeRoutes(app);
+// clienteRoutes(app);
+// pacoteRoutes(app);
+// pedidoRoutes(app);
+// ped_pacRoutes(app);
 
-servidor.use(restify.plugins.acceptParser(servidor.acceptable));
-servidor.use(restify.plugins.queryParser());
-servidor.use(restify.plugins.bodyParser());
-
-servidor.listen(8001, function () {
-  console.log('%s executando em %s', servidor.name, servidor.url);
+app.listen(port, () => {
+  console.log(`Servidor executando em http://localhost:${port}`);
 });
-
-categoriaRoutes(servidor);
-cidadeRoutes(servidor);
-clienteRoutes(servidor);
-produtoRoutes(servidor);
-pedidoRoutes(servidor);
-ped_pacRoutes(servidor)
 

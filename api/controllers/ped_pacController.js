@@ -1,22 +1,27 @@
+const express = require('express');
+const router = express.Router();
 const knex = require('../knex');
-const errors = require('restify-errors');
+const { BadRequestError } = require('restify-errors');
 
-const getPed_Pac = (req, res, next) => {
-  knex('pedidos_pacotes').then((dados) => {
+const getPed_Pac = async (req, res, next) => {
+  try {
+    const dados = await knex('pedidos_pacotes');
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const adicionarPed_Pac = (req, res, next) => {
-    knex('pedidos_pacotes')
+const adicionarPed_Pac = async (req, res, next) => {
+  try {
+    const dados = await knex('pedidos_pacotes')
       .insert(req.body)
-      .returning('*')
-      .then((dados) => {
-        res.send(dados[0]);
-      })
-      .catch(next);
-  };
-  
+      .returning('*');
+    res.send(dados[0]);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getPed_Pac,
