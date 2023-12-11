@@ -1,5 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const path = require('path');
 
 // Routes
 const categoriaRoutes = require('./routes/categoriaRoutes');
@@ -10,28 +14,85 @@ const pacoteRoutes = require('./routes/pacoteRoutes');
 const ped_pacRoutes = require('./routes/ped_pacRoutes');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-// Add your routes
-app.get('/', (req, res) => {
-  res.status(200).send("Seja bem-vindo ao API BoaViagem");
+app.set('view engine', 'ejs');
+
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'SECRET' 
+}));
+
+app.get('/', function(req, res) {
+  res.render('pages/auth');
 });
+
+app.get('/', function(req, res){
+  res.render('pages/success', {user: userProfile});
+});
+
+//const port = process.env.PORT || 3000;
+//app.listen(port , () => console.log('App listening on port ' + port));
+
+
+/*  PASSPORT SETUP  */
+
+//const passport = require('passport');
+var userProfile;
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.set('view engine', 'ejs');
+
+app.get('/success', (req, res) => res.send(userProfile));
+app.get('/error', (req, res) => res.send("error logging in"));
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+
+/*  Google AUTH  */
+ 
+//const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GOOGLE_CLIENT_ID = '346637207694-8980ehioe0uhhujvgpgl4kuimgarlus6.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+      userProfile=profile;
+      return done(null, userProfile);
+  }
+));
+ 
+app.get('/auth/google', 
+  passport.authenticate('google', { scope : ['profile', 'email'] }));
+ 
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/error' }),
+  function(req, res) {
+    // Successful authentication, redirect success.
+    res.redirect('/success');
+  });
+// Add your routes
 app.use('/categoria', categoriaRoutes);
-app.use('/categoria', cidadeRoutes);
-app.use('/categoria', clienteRoutes);
-app.use('/categoria', pacoteRoutes);
-app.use('/categoria', pedidoRoutes);
-app.use('/categoria', ped_pacRoutes);
-//categoriaRoutes(app);
-// cidadeRoutes(app);
-// clienteRoutes(app);
-// pacoteRoutes(app);
-// pedidoRoutes(app);
-// ped_pacRoutes(app);
+app.use('/cidade', cidadeRoutes);
+app.use('/cliente', clienteRoutes);
+app.use('/pacote', pacoteRoutes);
+app.use('/pedido', pedidoRoutes);
+app.use('/ped_pac', ped_pacRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor executando em http://localhost:${port}`);
 });
-
