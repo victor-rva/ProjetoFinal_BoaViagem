@@ -1,80 +1,94 @@
-// categoriaController.js
-const knex = require('../knex'); // Importe o arquivo knexfile.js que acabamos de criar
-const errors = require('restify-errors');
+const express = require('express');
+const router = express.Router();
+const knex = require('../knex');
+const { BadRequestError } = require('restify-errors');
 
-// Aqui você pode definir todas as operações relacionadas à categoria
+// Aqui você pode definir todas as operações relacionadas aos clientes
 
-const getClientes = (req, res, next) => {
-  knex('clientes').then((dados) => {
+const getClientes = async (req, res, next) => {
+  try {
+    const dados = await knex('clientes');
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getClientePorId = (req, res, next) => {
-  const idCategoria = req.params.idCat;
-  knex('clientes')
-    .where('id', idCategoria)
-    .first()
-    .then((dados) => {
-      if (!dados || dados == '') {
-        return res.send(new errors.BadRequestError('Cliente não encontrado'));
-      } else {
-        res.send(dados);
-      }
-    });
+const getClientePorId = async (req, res, next) => {
+  const idCliente = req.params.idCat;
+  try {
+    const dados = await knex('clientes')
+      .where('id', idCliente)
+      .first();
+
+    if (!dados || dados == '') {
+      return res.status(400).send(new BadRequestError('Cliente não encontrado'));
+    } else {
+      res.send(dados);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const adicionarCliente = (req, res, next) => {
-    knex('clientes')
+const adicionarCliente = async (req, res, next) => {
+  try {
+    const dados = await knex('clientes')
       .insert(req.body)
-      .returning('*')
-      .then((dados) => {
-        res.send(dados[0]);
-      })
-      .catch(next);
-  };
+      .returning('*');
+    res.send(dados[0]);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const atualizarCliente = (req, res, next) => {
-    const id = req.params.id;
-    knex('clientes')
+const atualizarCliente = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('clientes')
       .where('id', id)
-      .update(req.body)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Esse cliente não foi encontrado'));
-        }
-        res.send("Cliente de id "+id+" atualizado");
-      })
-      .catch(next);
-  };
-  
-  const deletarCliente = (req, res, next) => {
-    const id = req.params.id;
-    knex('clientes')
-      .where('id', id)
-      .delete()
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Este cliente não foi encontrado'));
-        }
-        res.send("Cliente de id "+id+" deletada");
-      })
-      .catch(next);
-  };
+      .update(req.body);
 
-  const realizarPedido = (req, res, next) => {
-    const id = req.params.id;
-    knex('clientes')
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Esse cliente não foi encontrado'));
+    }
+    res.send(`Cliente de id ${id} atualizado`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deletarCliente = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('clientes')
       .where('id', id)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Este cliente não foi encontrado'));
-        }
-        res.send("Cliente de id "+id+" deletada");
-      })
-      .catch(next);
-  };
-  
+      .delete();
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Este cliente não foi encontrado'));
+    }
+    res.send(`Cliente de id ${id} deletado`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const realizarPedido = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('clientes')
+      .where('id', id);
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Este cliente não foi encontrado'));
+    }
+    // Lógica para realizar um pedido
+    res.send(`Pedido realizado para o cliente de id ${id}`);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getClientes,

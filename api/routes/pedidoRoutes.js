@@ -1,12 +1,13 @@
+const express = require('express');
 const pedidoController = require('../controllers/pedidoController');
 
-function pedidoRoutes(servidor) {
-  servidor.get('/pedidos', pedidoController.getPedidos);
-  servidor.get('/pedidos/:id', pedidoController.getPedidoPorId);
-  servidor.get('/pedidos/clientes/:id',pedidoController.getPorCliente);
-  servidor.post('/pedidos', pedidoController.adicionarPedido);
-  servidor.put('/pedidos/:id', pedidoController.atualizarPedido);
-  servidor.del('/pedidos/:id', pedidoController.deletarPedido);
-}
+const router = express.Router();
 
-module.exports = pedidoRoutes;
+router.get('/pedidos', pedidoController.getPedidos);
+router.get('/pedidos/:id', pedidoController.getPedidoPorId);
+router.get('/pedidos/clientes/:id', pedidoController.getPedidosPorCliente);
+router.post('/pedidos', pedidoController.adicionarPedido);
+router.put('/pedidos/:id', pedidoController.atualizarPedido);
+router.delete('/pedidos/:id', pedidoController.deletarPedido);
+
+module.exports = router;

@@ -1,76 +1,88 @@
-// categoriaController.js
-const knex = require('../knex'); // Importe o arquivo knexfile.js que acabamos de criar
-const errors = require('restify-errors');
+const express = require('express');
+const router = express.Router();
+const knex = require('../knex');
+const { BadRequestError } = require('restify-errors');
 
 // Aqui você pode definir todas as operações relacionadas à categoria
 
-const getPacotes = (req, res, next) => {
-  knex('pacotes').then((dados) => {
+const getPacotes = async (req, res, next) => {
+  try {
+    const dados = await knex('pacotes');
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getPacotePorId = (req, res, next) => {
+const getPacotePorId = async (req, res, next) => {
   const idPacote = req.params.idProd;
-  knex('pacotes')
-    .where('id', idPacote)
-    .first()
-    .then((dados) => {
-      if (!dados || dados == '') {
-        return res.send(new errors.BadRequestError('Pacote não encontrado'));
-      } else {
-        res.send(dados);
-      }
-    });
+  try {
+    const dados = await knex('pacotes')
+      .where('id', idPacote)
+      .first();
+
+    if (!dados || dados == '') {
+      return res.status(400).send(new BadRequestError('Pacote não encontrado'));
+    } else {
+      res.send(dados);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getDisponiveis = (req, res, next) => {
-  knex('pacotes')
-  .where('disponivel',true)
-  .then((dados) => {
+const getDisponiveis = async (req, res, next) => {
+  try {
+    const dados = await knex('pacotes')
+      .where('disponivel', true);
     res.send(dados);
-  }, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
-
-const adicionarPacote = (req, res, next) => {
-    knex('pacotes')
+const adicionarPacote = async (req, res, next) => {
+  try {
+    const dados = await knex('pacotes')
       .insert(req.body)
-      .returning('*')
-      .then((dados) => {
-        res.send(dados[0]);
-      })
-      .catch(next);
-  };
+      .returning('*');
+    res.send(dados[0]);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const atualizarPacote = (req, res, next) => {
-    const id = req.params.id;
-    knex('pacotes')
+const atualizarPacote = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('pacotes')
       .where('id', id)
-      .update(req.body)
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Esse Pacote não foi encontrado'));
-        }
-        res.send("Cliente de id "+id+" atualizado");
-      })
-      .catch(next);
-  };
-  
-  const deletarPacote = (req, res, next) => {
-    const id = req.params.id;
-    knex('pacotes')
+      .update(req.body);
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Esse Pacote não foi encontrado'));
+    }
+    res.send(`Pacote de id ${id} atualizado`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deletarPacote = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const dados = await knex('pacotes')
       .where('id', id)
-      .delete()
-      .then((dados) => {
-        if (!dados) {
-          return res.send(new errors.BadRequestError('Este Pacote não foi encontrado'));
-        }
-        res.send("Pacote de id "+id+" deletada");
-      })
-      .catch(next);
-  };
-  
+      .delete();
+
+    if (!dados) {
+      return res.status(400).send(new BadRequestError('Este Pacote não foi encontrado'));
+    }
+    res.send(`Pacote de id ${id} deletado`);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getPacotes,
