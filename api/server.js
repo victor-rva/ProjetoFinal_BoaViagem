@@ -26,21 +26,19 @@ app.use(session({
   secret: 'SECRET' 
 }));
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
+  res.send('API FUNCIONANDO!')
+});
+
+app.get('/oauth', function(req, res) {
   res.render('pages/auth');
 });
 
-app.get('/', function(req, res){
+app.get('/oauth', function(req, res){
   res.render('pages/success', {user: userProfile});
 });
 
-//const port = process.env.PORT || 3000;
-//app.listen(port , () => console.log('App listening on port ' + port));
-
-
 /*  PASSPORT SETUP  */
-
-//const passport = require('passport');
 var userProfile;
 
 app.use(passport.initialize());
@@ -62,7 +60,6 @@ passport.deserializeUser(function(obj, cb) {
 
 /*  Google AUTH  */
  
-//const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const GOOGLE_CLIENT_ID = '346637207694-8980ehioe0uhhujvgpgl4kuimgarlus6.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECRET = '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';
 passport.use(new GoogleStrategy({
@@ -85,6 +82,7 @@ app.get('/auth/google/callback',
     // Successful authentication, redirect success.
     res.redirect('/success');
   });
+
 // Add your routes
 app.use('/categoria', categoriaRoutes);
 app.use('/cidade', cidadeRoutes);

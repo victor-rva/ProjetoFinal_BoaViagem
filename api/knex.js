@@ -7,3 +7,5 @@ var knex = require('knex')({
         database: 'site_viagem'
     }
 });
+
+module.exports = knex;
