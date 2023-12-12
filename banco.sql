@@ -109,7 +109,7 @@ BEGIN
     
     -- Atualizar a quantidade do pacote
     UPDATE pacotes
-    SET quantidade = pacote_quantidade_atual + diferenca_quantidade
+    SET quantidade = pacote_quantidade_atual - diferenca_quantidade
     WHERE id = NEW.pacote_id;
 END;
 
