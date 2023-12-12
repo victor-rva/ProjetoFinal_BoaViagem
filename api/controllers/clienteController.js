@@ -35,7 +35,7 @@ const adicionarCliente = async (req, res, next) => {
   try {
     const dados = await knex('clientes')
       .insert(req.body)
-      .returning('*');
+      // .returning('*');
     res.send(dados);
   } catch (error) {
     next(error);
