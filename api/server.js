@@ -4,6 +4,7 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const path = require('path');
+const cors = require('cors');
 
 // Routes
 const categoriaRoutes = require('./routes/categoriaRoutes');
@@ -15,6 +16,12 @@ const ped_pacRoutes = require('./routes/ped_pacRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// app.use((req,res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000")
+//   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE")
+//   res.setHeader("Access-Control-Allow-Headers", "content-type")
+// })  ;
 
 app.use(bodyParser.json());
 

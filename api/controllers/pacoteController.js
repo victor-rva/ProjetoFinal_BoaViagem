@@ -45,8 +45,8 @@ const adicionarPacote = async (req, res, next) => {
   try {
     const dados = await knex('pacotes')
       .insert(req.body)
-      .returning('*');
-    res.send(dados[0]);
+      // .returning('*');
+    res.send(dados);
   } catch (error) {
     next(error);
   }

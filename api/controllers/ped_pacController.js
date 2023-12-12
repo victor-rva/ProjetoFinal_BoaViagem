@@ -16,8 +16,8 @@ const adicionarPed_Pac = async (req, res, next) => {
   try {
     const dados = await knex('pedidos_pacotes')
       .insert(req.body)
-      .returning('*');
-    res.send(dados[0]);
+      // .returning('*');
+    res.send(dados);
   } catch (error) {
     next(error);
   }

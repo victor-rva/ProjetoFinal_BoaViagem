@@ -34,9 +34,9 @@ const getCidadePorId = async (req, res, next) => {
 const adicionarCidade = async (req, res, next) => {
   try {
     const dados = await knex('cidades')
-      .insert(req.body)
-      .returning('*');
-    res.send(dados[0]);
+      .insert(req.body);
+      // .returning('*');
+    res.send(dados);
   } catch (error) {
     next(error);
   }
