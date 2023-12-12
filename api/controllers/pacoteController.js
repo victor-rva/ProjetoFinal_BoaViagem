@@ -3,7 +3,7 @@ const router = express.Router();
 const knex = require('../knex');
 const { BadRequestError } = require('restify-errors');
 
-// Aqui você pode definir todas as operações relacionadas à categoria
+// Operações relacionadas aos pacotes
 
 const getPacotes = async (req, res, next) => {
   try {

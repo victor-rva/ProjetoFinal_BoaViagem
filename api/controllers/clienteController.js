@@ -3,7 +3,7 @@ const router = express.Router();
 const knex = require('../knex');
 const { BadRequestError } = require('restify-errors');
 
-// Aqui você pode definir todas as operações relacionadas aos clientes
+// Operações relacionadas aos clientes
 
 const getClientes = async (req, res, next) => {
   try {

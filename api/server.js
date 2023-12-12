@@ -79,11 +79,11 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/error' }),
   function(req, res) {
-    // Successful authentication, redirect success.
+    // Autenticação bem-sucedida, redirecionamento para sucess.
     res.redirect('/success');
   });
 
-// Add your routes
+// Chamando rotas
 app.use('/categoria', categoriaRoutes);
 app.use('/cidade', cidadeRoutes);
 app.use('/cliente', clienteRoutes);

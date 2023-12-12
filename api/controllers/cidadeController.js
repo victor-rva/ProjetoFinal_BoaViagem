@@ -3,7 +3,7 @@ const router = express.Router();
 const knex = require('../knex'); // Importe o arquivo knexfile.js que acabamos de criar
 const { BadRequestError } = require('restify-errors');
 
-// Aqui você pode definir todas as operações relacionadas à categoria
+// Operações relacionadas as cidades
 
 const getCidades = async (req, res, next) => {
   try {
