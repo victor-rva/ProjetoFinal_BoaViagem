@@ -1,130 +1,80 @@
-function adicionar(){
+// script.js
 
-    nome = document.getElementById("txtNome").value
-    if(nome.length == 0){
-        alert("O campo nome é obrigatório!");
-    }else{
-        ajax = new XMLHttpRequest();
+document.addEventListener("DOMContentLoaded", function () {
+    // Função para carregar as opções iniciais no dropdown
+    carregarOpcoes();
 
-        ajax.onreadystatechange = function(){
-            if(this.readyState == 4 && this.status == 200){
-                alert(nome + " cadastrado com sucesso!");
-                buscarCategoria();
-            }else if(this.readyState == 4){
-                alert(this.status + "\n" + this.responseText);
-            }
-        };
+    // Adiciona um ouvinte de evento para alterações no dropdown
+    document.getElementById('opcoes').addEventListener('change', function () {
+        var opcaoSelecionada = document.getElementById('opcoes').value;
 
-        ajax.open("POST", "http://localhost:3000/categoria/categorias", true);
-        ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // Limpa os campos e a tabela
+        limparCampos();
+        limparTabela();
 
-        ajax.send("nome=" + nome);
-    }
-}
+        // Adiciona campos de preenchimento conforme a opção selecionada
+        carregarCampos(opcaoSelecionada);
+    });
+});
 
-function buscarCategoria(){
-    tabela = document.getElementById("tblCategoria")
-    ajax = new XMLHttpRequest();
+function carregarOpcoes() {
+    // Fazer uma requisição GET para obter as opções disponíveis do servidor
+    fetch('http://localhost:3000/opcoes')
+        .then(response => response.json())
+        .then(data => {
+            var dropdown = document.getElementById('opcoes');
 
-    ajax.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            obj = JSON.parse(this.responseText);
-            obj.forEach(prod => {
-                if(document.getElementById("p" + prod.id) == null){
-                    linha = tabela.insertRow(-1);
-                    linha.id = "p" +prod.id;
-                    cellId = linha.insertCell(0);
-                    cellNome = linha.insertCell(1);
-                    cellExcluir = linha.insertCell(2);
-
-                    cellId.innerHTML = prod.id;
-                    cellNome.innerHTML = prod.nome;
-                    cellExcluir.innerHTML = "<button onclick='excluir("+prod.id+")'>" + "Excluir</button>";
-                }
+            // Adiciona as opções no dropdown
+            data.forEach(opcao => {
+                var option = document.createElement('option');
+                option.value = opcao;
+                option.textContent = opcao;
+                dropdown.appendChild(option);
             });
-        }
-    };
-    ajax.open("GET", "http://localhost:3000/categoria", true);
-    ajax.send();
+
+            // Atualiza os campos e a tabela com a primeira opção
+            if (data.length > 0) {
+                carregarCampos(data[0]);
+            }
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+        });
 }
 
-function excluir(idProd){
-    ajax = new XMLHttpRequest();
-    ajax.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            buscarCategoria();
-        }
-        ajax.open("DELETE", "http://localhost:3000/categoria", idProd,true);
-        ajax.send();       
-    };
+function carregarCampos(opcao) {
+    // Fazer uma requisição GET para obter os campos correspondentes à opção selecionada
+    fetch(`http://localhost:3000/campos?opcao=${opcao}`)
+        .then(response => response.json())
+        .then(data => {
+            var opcaoSelecionadaDiv = document.getElementById('opcaoSelecionada');
+            opcaoSelecionadaDiv.innerHTML = "";
+
+            // Adiciona campos de preenchimento conforme a opção selecionada
+            data.forEach(campo => {
+                var label = document.createElement('label');
+                label.for = campo.nome;
+                label.textContent = `${campo.nome}:`;
+
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.id = campo.nome;
+
+                opcaoSelecionadaDiv.appendChild(label);
+                opcaoSelecionadaDiv.appendChild(input);
+            });
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+        });
 }
 
-/////
+function limparCampos() {
+    var opcaoSelecionadaDiv = document.getElementById('opcaoSelecionada');
+    opcaoSelecionadaDiv.innerHTML = "";
+}
 
-// function adicionar(){
-
-//     nome = document.getElementById("txtNome").value
-//     if(nome.length == 0){
-//         alert("O campo nome é obrigatório!");
-//     }else{
-//         ajax = new XMLHttpRequest();
-
-//         ajax.onreadystatechange = function(){
-//             if(this.readyState == 4 && this.status == 200){
-//                 alert(nome + " cadastrado com sucesso!");
-//                 buscarCategoria();
-//             }else if(this.readyState == 4){
-//                 alert(this.status + "\n" + this.responseText);
-//             }
-//         };
-
-//         ajax.open("POST", "http://localhost:3000/categoria", true);
-//         ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-//         preco = document.getElementById("txtPreco").value;
-//         qtd = document.getElementById("txtQuantidade").value;
-
-//         ajax.send("nome=" + nome + "&preco=" + preco + "&quantidade=" + qtd);
-//     }
-// }
-
-// function buscarProdutos(){
-//     tabela = document.getElementById("tblProdutos")
-//     ajax = new XMLHttpRequest();
-
-//     ajax.onreadystatechange = function(){
-//         if(this.readyState == 4 && this.status == 200){
-//             obj = JSON.parse(this.responseText);
-//             obj.forEach(prod => {
-//                 if(document.getElementById("p" + prod.id) == null){
-//                     linha = tabela.insertRow(-1);
-//                     linha.id = "p" +prod.id;
-//                     cellId = linha.insertCell(0);
-//                     cellNome = linha.insertCell(1);
-//                     cellPreco = linha.insertCell(2);
-//                     cellQtd = linha.insertCell(3);
-//                     cellExcluir = linha.insertCell(4);
-
-//                     cellId.innerHTML = prod.id;
-//                     cellNome.innerHTML = prod.nome;
-//                     cellPreco.innerHTML = prod.preco;
-//                     cellQtd.innerHTML = prod.quantidade;
-//                     cellExcluir.innerHTML = "<button onclick='excluir("+prod.id+")'>" + "Excluir</button>";
-//                 }
-//             });
-//         }
-//     };
-//     ajax.open("GET", "http://localhost:8001/produtos", true);
-//     ajax.send();
-// }
-
-// function excluir(idProd){
-//     ajax = new XMLHttpRequest();
-//     ajax.onreadystatechange = function(){
-//         if(this.readyState == 4 && this.status == 200){
-//             buscarProdutos();
-//         }
-//         ajax.open("DELETE", "http://localhost:8001/produtos", idProd,true);
-//         ajax.send();       
-//     };
-// }
+function limparTabela() {
+    var tabelaInfo = document.getElementById('tabelaInfo');
+    tabelaInfo.querySelector('tbody').innerHTML = "";
+}
