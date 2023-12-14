@@ -5,33 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opções Selecionáveis com Quadros de Preenchimento</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
     <h2>Escolha uma Opção:</h2>
 
     <select id="opcoes">
-        <option value="opcao1">Opção 1</option>
-        <option value="opcao2">Opção 2</option>
-        <option value="opcao3">Opção 3</option>
-        <option value="opcao4">Opção 4</option>
-        <!-- Adicione mais opções conforme necessário -->
+        <!-- Opções serão carregadas dinamicamente pelo script.js -->
     </select>
 
     <div id="opcaoSelecionada">
@@ -43,62 +24,15 @@
         <thead>
             <tr>
                 <th>Opção</th>
-                <th>Campo 1</th>
-                <th>Campo 2</th>
-                <th>Campo 3</th>
-                <!-- Adicione mais colunas conforme necessário -->
+                <!-- Colunas serão carregadas dinamicamente pelo script.js -->
             </tr>
         </thead>
         <tbody>
-            <!-- As linhas serão adicionadas dinamicamente -->
+            <!-- As linhas serão adicionadas dinamicamente pelo script.js -->
         </tbody>
     </table>
 
-    <script>
-        // Função para exibir o quadro de preenchimento correspondente à opção selecionada
-        document.getElementById('opcoes').addEventListener('change', function() {
-            var opcaoSelecionada = document.getElementById('opcoes').value;
-            var opcaoSelecionadaDiv = document.getElementById('opcaoSelecionada');
-
-            // Limpa o conteúdo anterior
-            opcaoSelecionadaDiv.innerHTML = "";
-
-            // Adiciona campos de preenchimento conforme a opção selecionada
-            if (opcaoSelecionada === 'opcao1') {
-                opcaoSelecionadaDiv.innerHTML = `
-                    <label for="campo1">Campo 1:</label>
-                    <input type="text" id="campo1">
-
-                    <label for="campo2">Campo 2:</label>
-                    <input type="text" id="campo2">
-
-                    <label for="campo3">Campo 3:</label>
-                    <input type="text" id="campo3">
-                `;
-            } else if (opcaoSelecionada === 'opcao2') {
-                // Adicione campos para a 'opcao2'
-            }
-            // Adicione mais condições conforme necessário
-        });
-
-        // Função para exibir as informações na tabela
-        document.getElementById('opcoes').addEventListener('change', function() {
-            var opcaoSelecionada = document.getElementById('opcoes').value;
-            var tabelaInfo = document.getElementById('tabelaInfo');
-            var campos = document.getElementById('opcaoSelecionada').getElementsByTagName('input');
-
-            // Adiciona uma nova linha na tabela
-            var novaLinha = tabelaInfo.insertRow(-1);
-            var celulaOpcao = novaLinha.insertCell(0);
-            celulaOpcao.innerHTML = opcaoSelecionada;
-
-            // Adiciona as informações dos campos
-            for (var i = 0; i < campos.length; i++) {
-                var novaCelula = novaLinha.insertCell(i + 1);
-                novaCelula.innerHTML = campos[i].value;
-            }
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
+
