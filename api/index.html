@@ -4,35 +4,190 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opções Selecionáveis com Quadros de Preenchimento</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Projeto Final</title>
+    <script src="script.js" defer></script>
 </head>
-<body>
+<body onload="buscarCategoria()">
+    <h1>Login com OAuth</h1>
 
-    <h2>Escolha uma Opção:</h2>
+    <!-- Botão de login -->
+    <button id="loginBtn" onclick="redirectToGoogleLogin()">Login com Google</button>
 
-    <select id="opcoes">
-        <!-- Opções serão carregadas dinamicamente pelo script.js -->
-    </select>
 
-    <div id="opcaoSelecionada">
+    <div>
+        <h2>Categoria</h2>
+        <input type="text" id="txtNomeCat" placeholder="Nome: "> <br>
+        <input type="button" id="btnAdicionarCat" onclick="adicionarCategoria()" value="Adicionar"> <br>
+        <input type="button" id="btnBuscarCategoria" onclick="buscarCategoria()" value="Buscar">
+        <input type="button" id="btnAlterarCategoria" onclick="alterarCategoria()" value="Alterar">
 
+        <table border="1" id="tblCategoria">
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Excluir</th>
+            </tr>
+        </table>
+
+        <label for="txtNovoNomeCat">Novo Nome:</label>
+        <input type="text" id="txtNovoNomeCat" placeholder="Novo Nome"> <br>
+    
+        <input type="button" id="btnAdicionarCat" onclick="adicionarCategoria()" value="Adicionar"> <br>
+        <input type="button" id="btnAlterarCat" onclick="alterarCategoria()" value="Alterar"> <br>
+    
     </div>
 
-    <h3>Informações:</h3>
-    <table id="tabelaInfo">
-        <thead>
-            <tr>
-                <th>Opção</th>
-                <!-- Colunas serão carregadas dinamicamente pelo script.js -->
-            </tr>
-        </thead>
-        <tbody>
-            <!-- As linhas serão adicionadas dinamicamente pelo script.js -->
-        </tbody>
-    </table>
+    <hr>
 
-    <script src="script.js"></script>
+    <div>
+        <h2>Cidade</h2>
+        <input type="text" id="txtNomeCid" placeholder="Nome: "> <br>
+        <input type="button" id="btnAdicionarCid" onclick="adicionarCidade()" value="Adicionar"> <br>
+        <input type="button" id="btnBuscarCidade" onclick="buscarCidade()" value="Buscar">
+
+        <table border="1" id="tblCidade">
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Excluir</th>
+            </tr>
+        </table>
+
+        <label for="txtIdCidade">ID da Cidade:</label>
+        <input type="text" id="txtIdCidade" placeholder="ID da Cidade"> <br>
+        <label for="txtNovoNome">Novo Nome:</label>
+        <input type="text" id="txtNovoNome" placeholder="Novo Nome"> <br>
+        <input type="button" id="btnAlterarCid" onclick="alterarCidade()" value="Alterar"> <br>
+    </div>
+
+    <hr>
+
+    <div>
+        <h2>Cliente</h2>
+        <input type="text" id="txtNomeClie" placeholder="Nome: "> <br>
+        <input type="text" id="txtAltura" placeholder="Altura: "> <br>
+        <input type="text" id="txtNascimento" placeholder="Data de Nascimento: "> <br>
+        <input type="text" id="txtCliente_ID" placeholder="ID do Cliente: "> <br>
+        <input type="button" id="btnAdicionarClie" onclick="adicionarCliente()" value="Adicionar"> <br>
+        <input type="button" id="btnBuscarCliente" onclick="buscarCliente()" value="Buscar">
+        <input type="button" id="btnAlterarCliente" onclick="alterarCliente()" value="Alterar">
+
+        <table border="1" id="tblCliente">
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Altura</th>
+                <th>Nascimento</th>
+                <th>ID do Cliente</th>
+                <th>Excluir</th>
+            </tr>
+        </table>
+
+        <label for="txtNomeClie">Nome:</label>
+        <input type="text" id="txtNomeClie" placeholder="Nome: "> <br>
+
+        <!-- Adicionando labels e inputs para a alteração -->
+        <label for="txtNovoNomeClie">Novo Nome:</label>
+        <input type="text" id="txtNovoNomeClie" placeholder="Novo Nome"> <br>
+
+        <label for="txtAltura">Altura:</label>
+        <input type="text" id="txtAltura" placeholder="Altura: "> <br>
+
+        <label for="txtNascimento">Data de Nascimento:</label>
+        <input type="text" id="txtNascimento" placeholder="Data de Nascimento: "> <br>
+
+        <label for="txtCliente_ID">ID do Cliente:</label>
+        <input type="text" id="txtCliente_ID" placeholder="ID do Cliente: "> <br>
+
+        <input type="button" id="btnAdicionarClie" onclick="adicionarCliente()" value="Adicionar"> <br>
+        <input type="button" id="btnAlterarClie" onclick="alterarCliente()" value="Alterar"> <br>
+    </div>
+
+    <hr>
+
+    <div>
+        <h2>Pacote</h2>
+        <input type="text" id="txtNomePac" placeholder="Nome:"> <br>
+        <input type="text" id="txtPreco" placeholder="Preço:"> <br>
+        <input type="text" id="txtQuantidade" placeholder="Quantidade:"> <br>
+        <input type="text" id="txtCategoria_ID" placeholder="ID da Categoria:"> <br>
+        <input type="text" id="txtDataInicio" placeholder="Data de Início:"> <br>
+        <input type="text" id="txtDataRetorno" placeholder="Data de Retorno:"> <br>
+        <input type="text" id="txtValidade" placeholder="Validade:"> <br>
+        <input type="button" id="btnAdicionarPac" onclick="adicionarPacote()" value="Adicionar"> <br>
+        <input type="button" id="btnBuscarPacote" onclick="buscarPacote()" value="Buscar">
+    
+        <table border="1" id="tblPacote">
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>ID da Categoria</th>
+                <th>Data de Início</th>
+                <th>Data de Retorno</th>
+                <th>Validade</th>
+                <th>Excluir</th>
+            </tr>
+        </table>
+    
+        <label for="txtNovoNomePac">Novo Nome:</label>
+        <input type="text" id="txtNovoNomePac" placeholder="Novo Nome"> <br>
+        <label for="txtNovoPreco">Novo Preço:</label>
+        <input type="text" id="txtNovoPreco" placeholder="Novo Preço"> <br>
+    
+        <input type="button" id="btnAlterarPac" onclick="alterarPacote()" value="Alterar"> <br>
+    </div>
+    <hr>
+
+    <div>
+        <h2>Pedido Pacote</h2>
+        <input type="text" id="txtPedido_ID" placeholder="ID do Pedido: "> <br>
+        <input type="text" id="txtPacote_ID" placeholder="ID do Pacote: "> <br>
+        <input type="text" id="txtPrecoPed_Pac" placeholder="Preço: "> <br>
+        <input type="text" id="txtQuantidadePed_Pac" placeholder="Quantidade: "> <br>
+        <input type="button" id="btnAdicionarPed_Pac" onclick="adicionarPed_Pac()" value="Adicionar"> <br>
+        <input type="button" id="btnBuscarPed_Pac" onclick="buscarPed_Pac()" value="Buscar">
+
+        <table border="1" id="tblPed_Pac">
+            <tr>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Excluir</th>
+            </tr>
+        </table>
+    </div>
+
+    <hr>
+
+    <div>
+        <h2>Pedido</h2>
+        <input type="text" id="txtNomePed" placeholder="Nome: "> <br>
+        <input type="text" id="txtHorario" placeholder="Horário: "> <br>
+        <input type="text" id="txtQuantidade" placeholder="Quantidade: "> <br>
+        <input type="text" id="txtCliente_ID" placeholder="ID do Cliente: "> <br>
+        <input type="button" id="btnAdicionarPed" onclick="adicionarPedido()" value="Adicionar"> <br>
+        <input type="button" id="btnBuscarPedidos" onclick="buscarPedido()" value="Buscar Pedidos"> <br>
+
+        <table border="1" id="tblPedido">
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Horário</th>
+                <th>Quantidade</th>
+                <th>ID do Cliente</th>
+                <th>Excluir</th>
+            </tr>
+        </table>
+
+        <label for="txtIdPedido">ID do Pedido:</label>
+        <input type="text" id="txtIdPedido" placeholder="ID do Pedido"> <br>
+        <label for="txtNovoNome">Novo Nome:</label>
+        <input type="text" id="txtNovoNome" placeholder="Novo Nome"> <br>
+        <input type="button" id="btnAlterarPed" onclick="alterarPedido()" value="Alterar"> <br>
+    </div>
+
+    <script src="script.js" defer></script>
 </body>
 </html>
-

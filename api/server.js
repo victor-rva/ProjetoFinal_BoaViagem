@@ -23,6 +23,8 @@ const port = process.env.PORT || 3000;
 //   res.setHeader("Access-Control-Allow-Headers", "content-type")
 // })  ;
 
+//app.use(cors())
+
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
